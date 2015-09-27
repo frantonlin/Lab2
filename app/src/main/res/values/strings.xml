@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Photo Stream</string>
+    <string name="action_settings">Settings</string>
+    <string name="search_hint">Enter keywords</string>
+    <string name="search_title">Search for photos</string>
+</resources>
