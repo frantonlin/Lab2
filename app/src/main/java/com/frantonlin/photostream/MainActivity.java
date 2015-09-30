@@ -6,22 +6,30 @@ import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.SearchView;
 
-import java.lang.reflect.Field;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+//    private static final String TAG = MainActivity.class.getSimpleName();
     private SearchFragment searchFragment;
+
+    // Instantiate the RequestQueue.
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         searchFragment = new SearchFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, searchFragment).commit();
+        getFragmentManager().beginTransaction().add(R.id.container, searchFragment).commit();
 
-        handleIntent(getIntent());
+        queue = Volley.newRequestQueue(this);
     }
 
 
@@ -41,22 +48,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        // Associate searchable configuration with the SearchView
-        MenuItem search = menu.findItem(R.id.search);
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) search.getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconified(false);
-
         return true;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
     }
 
     @Override
@@ -66,10 +58,9 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.action_settings) {
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -81,12 +72,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //use the query to search your data somehow
-            Log.d(TAG, query);
-        }
+    public RequestQueue getQueue() {
+        return queue;
     }
 }
