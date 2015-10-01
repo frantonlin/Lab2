@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +25,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
+
+import javax.security.auth.callback.Callback;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class SearchFragment extends Fragment {
 
-    public SearchFragment() {
-    }
+    public SearchFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +55,7 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 EditText searchBar = (EditText) getActivity().findViewById(R.id.search_bar);
                 setText(searchBar.getText().toString());
+                makeRequestWithCallback(searchBar.getText().toString());
             }
         });
         searchBar.setOnKeyListener(new OnKeyListener() {
@@ -61,6 +66,7 @@ public class SearchFragment extends Fragment {
                         case KeyEvent.KEYCODE_ENTER:
                             if(((EditText) getActivity().findViewById(view.getId())) == ((EditText) getActivity().findViewById(R.id.search_bar))){
                                 setText(searchBar.getText().toString());
+                                makeRequestWithCallback(searchBar.getText().toString());
                             }
                             return true;
                         default:
@@ -73,32 +79,24 @@ public class SearchFragment extends Fragment {
     }
 
     public void setText(String text) {
-        String url = "http://www.google.com";
 
         final TextView tester = (TextView) getActivity().findViewById(R.id.tester);
-//        tester.setText(text);
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 50 characters of the response string.
-                        tester.setText("Response is: "+ response.substring(0,50));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                tester.setText("That didn't work!");
-            }
-        });
-        // Add the request to the RequestQueue.
-        ((MainActivity) getActivity()).getQueue().add(stringRequest);
+        tester.setText(text);
     }
 
-    public void search(String query) {
-    // request key: AIzaSyCU_NgWKrIokTxsV2MM_8o2x7Iko9e3ARI
-    // search id: 014156318284437473397:qkwz6_9kcmk
-    // Add the URL parameter searchType=image
+    public void makeRequestWithCallback(String query) {
+        ((MainActivity) getActivity()).getHttpHandler().searchWithCallback(new SuccessCallback() {
+
+            @Override
+            public void callback(boolean success, ArrayList<String> urls) {
+                if (success) {
+                    Log.d("Success", Boolean.toString(success));
+                    setText(urls.toString());
+                } else {
+                    Log.d("Failure", Boolean.toString(success));
+                    // handle failure
+                }
+            }
+        }, query);
     }
 }

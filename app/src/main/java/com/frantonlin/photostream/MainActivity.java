@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private SearchFragment searchFragment;
 
     // Instantiate the RequestQueue.
-    private RequestQueue queue;
+//    private RequestQueue queue;
+    private HTTPHandler httpHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         searchFragment = new SearchFragment();
         getFragmentManager().beginTransaction().add(R.id.container, searchFragment).commit();
 
-        queue = Volley.newRequestQueue(this);
+//        queue = Volley.newRequestQueue(this);
+        httpHandler = new HTTPHandler(this);
     }
 
 
@@ -72,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public RequestQueue getQueue() {
-        return queue;
+    public HTTPHandler getHttpHandler() {
+        return httpHandler;
     }
 }
+
