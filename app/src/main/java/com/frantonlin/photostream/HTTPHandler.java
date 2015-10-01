@@ -8,29 +8,37 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import javax.security.auth.callback.Callback;
-
 /**
- * Created by franton on 10/1/15.
+ * Handles the HTTP requests
+ * Created by Franton on 10/1/15.
  */
 public class HTTPHandler {
 
-    public RequestQueue queue; // this is where you should usually put the queue
+    // The request queue for Volley
+    public RequestQueue queue;
 
+    /**
+     * Constructor
+     * @param context the context of the handler
+     */
     public HTTPHandler(Context context) {
-        queue = Volley.newRequestQueue(context); // queue must be initialized with context, so create initializer which does this
+        queue = Volley.newRequestQueue(context);
     }
 
+    /**
+     * Search the specified query from the specified page with a callback
+     * @param callback the callback
+     * @param query the query to search
+     * @param page the page to start the search from
+     */
     public void searchWithCallback(final SuccessCallback callback, String query, int page) {
         String url = "https://www.googleapis.com/customsearch/v1?";
         String key = "AIzaSyCU_NgWKrIokTxsV2MM_8o2x7Iko9e3ARI";
@@ -43,13 +51,6 @@ public class HTTPHandler {
         String num = "10";
         String start = Integer.toString((page-1)*10+1);
 
-//        String requestUrl = url +
-//                "key=" + key +
-//                "&cx=" + cx +
-//                "&searchType=" + searchType +
-//                "&num=" + num +
-//                "&start=" + start +
-//                "&q=" + query;
         String requestUrl = url +
                 "key=" + key3 +
                 "&cx=" + cx3 +

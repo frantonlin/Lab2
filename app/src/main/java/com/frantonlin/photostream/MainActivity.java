@@ -10,21 +10,29 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import java.util.ArrayList;
 
-
+/**
+ * Main activity that houses the two fragments
+ * Created by Franton Lin
+ */
 public class MainActivity extends AppCompatActivity {
 
+    // Fragments
     private SearchFragment searchFragment;
     private ViewFragment viewFragment;
 
-    // Instantiate the HTTPHandler
+    // HTTP and database handlers
     private HTTPHandler httpHandler;
     private FeedReaderDbHelper dbHelper;
 
+    // URLs of saved images
     private ArrayList<String> savedUrls;
 
+    /**
+     * Initialize container with ViewFragment and load saved urls from database
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +48,11 @@ public class MainActivity extends AppCompatActivity {
         savedUrls = readFromDatabase();
     }
 
-
+    /**
+     * Initializes the options menu
+     * @param menu the options menu in which you place your items
+     * @return if menu is inflated
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -49,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Handles the selecting the menu items
+     * @param item the item that was selected
+     * @return true if selected item is handled correctly
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -69,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Transitions to the specified fragment
+     * @param fragment the fragment to transition to
+     */
     public void transitionToFragment(Fragment fragment) {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
@@ -76,33 +97,51 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    /**
+     * Getter for the HTTPHandler
+     * @return the HTTPHandler
+     */
     public HTTPHandler getHttpHandler() {
         return httpHandler;
     }
 
+    /**
+     * Save an image URL and add to the database
+     * @param url the URL to save
+     */
     public void saveImage(String url) {
         savedUrls.add(url);
         addToDatabase(url);
     }
 
+    /**
+     * Remove an image URL from the saved URLs and delete from the database
+     * @param position the position of the URL to delete
+     */
     public void deleteImage(int position) {
         deleteFromDatabase(savedUrls.get(position));
         savedUrls.remove(position);
     }
 
+    /**
+     * Getter for the saved URLs
+     * @return the saved URLs
+     */
     public ArrayList<String> getSavedUrls() {
         return savedUrls;
     }
 
+    /**
+     * Adds the specified string to the URL database
+     * @param url the URL to add
+     * @return the ID of the added row
+     */
     public long addToDatabase(String url) {
-        // Gets the data repository in write mode
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(FeedEntry.COLUMN_NAME_URL, url);
 
-        // Insert the new row, returning the primary key value of the new row
         long newRowId;
         newRowId = db.insert(
                 FeedEntry.TABLE_NAME,
@@ -112,30 +151,23 @@ public class MainActivity extends AppCompatActivity {
         return newRowId;
     }
 
+    /**
+     * Reads all of the URLs from the URL database
+     * @return an ArrayList of the URLs in the database
+     */
     public ArrayList<String> readFromDatabase() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ArrayList<String> urls = new ArrayList<>();
 
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
         String[] projection = {
                 FeedEntry._ID,
                 FeedEntry.COLUMN_NAME_URL,
         };
 
-        // How you want the results sorted in the resulting Cursor
         String sortOrder =
                 FeedEntry.COLUMN_NAME_URL + " DESC";
 
-        Cursor c = db.query(
-                FeedEntry.TABLE_NAME,  // The table to query
-                projection,                               // The columns to return
-                null,                                // The columns for the WHERE clause
-                null,                            // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                sortOrder                                 // The sort order
-        );
+        Cursor c = db.query(FeedEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
 
         if(c.moveToFirst()) {
             urls.add(c.getString(1));
@@ -148,13 +180,14 @@ public class MainActivity extends AppCompatActivity {
         return urls;
     }
 
+    /**
+     * Deletes the specified URL from the database
+     * @param url the URL to delete from the database
+     */
     public void deleteFromDatabase(String url) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        // Define 'where' part of query.
         String selection = FeedEntry.COLUMN_NAME_URL + " LIKE ?";
-        // Specify arguments in placeholder order.
         String[] selectionArgs = {url};
-        // Issue SQL statement.
         db.delete(FeedEntry.TABLE_NAME, selection, selectionArgs);
     }
 }
