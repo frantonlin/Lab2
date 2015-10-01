@@ -31,39 +31,22 @@ public class HTTPHandler {
         queue = Volley.newRequestQueue(context); // queue must be initialized with context, so create initializer which does this
     }
 
-    public void searchWithCallback(final SuccessCallback callback, String query) {
+    public void searchWithCallback(final SuccessCallback callback, String query, int page) {
         String url = "https://www.googleapis.com/customsearch/v1?";
         String key = "AIzaSyCU_NgWKrIokTxsV2MM_8o2x7Iko9e3ARI";
         String cx = "014156318284437473397:qkwz6_9kcmk";
         String searchType = "image";
         String num = "10";
-//        String start = Integer.toString((page-1)*10+1);
+        String start = Integer.toString((page-1)*10+1);
 
         String requestUrl = url +
                 "key=" + key +
                 "&cx=" + cx +
                 "&searchType=" + searchType +
                 "&num=" + num +
-                "&start=" + "1" +
+                "&start=" + start +
                 "&q=" + query;
         Log.d("URL", requestUrl);
-
-        // Request a string response from the provided URL.
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, requestUrl,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Display the first 50 characters of the response string.
-//                        tester.setText("Is my computer on? "+ response.substring(0,200));
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                tester.setText("That didn't work!");
-//            }
-//        });
-//        // Add the request to the RequestQueue.
-//        ((MainActivity) getActivity()).getQueue().add(stringRequest);
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -95,6 +78,7 @@ public class HTTPHandler {
                 }
         );
 
+        request.addMarker("search");
         queue.add(request);
     }
 }
