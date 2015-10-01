@@ -3,5 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="search_hint">Enter keywords</string>
     <string name="search_title">Search for photos</string>
-    <string name="load_more">Load more</string>
+    <string name="find_images">Find Images</string>
+    <string name="to_stream">To Stream</string>
 </resources>

@@ -34,14 +34,23 @@ public class HTTPHandler {
     public void searchWithCallback(final SuccessCallback callback, String query, int page) {
         String url = "https://www.googleapis.com/customsearch/v1?";
         String key = "AIzaSyCU_NgWKrIokTxsV2MM_8o2x7Iko9e3ARI";
+        String key2 = "AIzaSyCUjoI4H76ZXerGg8xPgjc2E2wUOyh8jE0";
         String cx = "014156318284437473397:qkwz6_9kcmk";
+        String cx2 = "014156318284437473397:bxllsb702mi";
         String searchType = "image";
         String num = "10";
         String start = Integer.toString((page-1)*10+1);
 
+//        String requestUrl = url +
+//                "key=" + key +
+//                "&cx=" + cx +
+//                "&searchType=" + searchType +
+//                "&num=" + num +
+//                "&start=" + start +
+//                "&q=" + query;
         String requestUrl = url +
-                "key=" + key +
-                "&cx=" + cx +
+                "key=" + key2 +
+                "&cx=" + cx2 +
                 "&searchType=" + searchType +
                 "&num=" + num +
                 "&start=" + start +

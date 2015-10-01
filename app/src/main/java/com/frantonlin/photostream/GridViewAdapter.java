@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.squareup.picasso.Picasso;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,10 +20,11 @@ import static android.widget.ImageView.ScaleType.CENTER_CROP;
 
 final class GridViewAdapter extends BaseAdapter {
     private final Context context;
-    private final List<String> urls = new ArrayList<String>();
+    private final ArrayList<String> urls;
 
     public GridViewAdapter(Context context) {
         this.context = context;
+        this.urls = new ArrayList<>();
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent) {
@@ -67,5 +70,9 @@ final class GridViewAdapter extends BaseAdapter {
     public void clearImages() {
         this.urls.clear();
         notifyDataSetChanged();
+    }
+
+    public ArrayList<String> getUrls(){
+        return this.urls;
     }
 }

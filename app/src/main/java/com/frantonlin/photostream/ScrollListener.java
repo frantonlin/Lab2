@@ -10,7 +10,7 @@ import android.widget.AbsListView;
 import com.squareup.picasso.Picasso;
 
 public class ScrollListener implements AbsListView.OnScrollListener {
-    private final Context context;
+    protected final Context context;
 
     public ScrollListener(Context context) {
         this.context = context;
@@ -29,10 +29,6 @@ public class ScrollListener implements AbsListView.OnScrollListener {
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
                          int totalItemCount) {
-        if(totalItemCount > 0 && firstVisibleItem + visibleItemCount >= totalItemCount){
-            FragmentManager fm = ((MainActivity) context).getFragmentManager();
-            SearchFragment searchFragment = (SearchFragment) fm.findFragmentById(R.id.container);
-            searchFragment.requestNextPageWithCallback();
-        }
+        // do nothing
     }
 }

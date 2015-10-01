@@ -1,36 +1,32 @@
 package com.frantonlin.photostream;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.SearchView;
+import android.widget.EditText;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
 
 //    private static final String TAG = MainActivity.class.getSimpleName();
     private SearchFragment searchFragment;
+    private ViewFragment viewFragment;
 
-    // Instantiate the RequestQueue.
-//    private RequestQueue queue;
+    // Instantiate the HTTPHandler
     private HTTPHandler httpHandler;
+
+    private ArrayList<String> savedUrls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +34,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         searchFragment = new SearchFragment();
+        viewFragment = new ViewFragment();
         getFragmentManager().beginTransaction().add(R.id.container, searchFragment).commit();
 
-//        queue = Volley.newRequestQueue(this);
         httpHandler = new HTTPHandler(this);
+
+        savedUrls = new ArrayList<>();
     }
 
 
@@ -60,11 +58,17 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        // Handle presses on the action bar items
+        switch (id) {
+            case R.id.back_to_stream:
+                transitionToFragment(viewFragment);
+                return true;
+            case R.id.find_images:
+                transitionToFragment(searchFragment);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void transitionToFragment(Fragment fragment) {
@@ -76,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
 
     public HTTPHandler getHttpHandler() {
         return httpHandler;
+    }
+
+    public void saveImage(String url) {
+        savedUrls.add(url);
+        Log.d("SAVE URLS", savedUrls.toString());
+    }
+
+    public ArrayList<String> getSavedUrls() {
+        return savedUrls;
     }
 }
 

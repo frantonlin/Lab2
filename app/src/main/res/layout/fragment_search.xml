@@ -34,15 +34,11 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/search"
         android:paddingTop="5dp"
-        android:id="@+id/grid_view"
+        android:id="@+id/search_grid_view"
         android:numColumns="@integer/column_count"
         android:scrollbarStyle="insideOverlay"
-        android:scrollbars="none"/>
-    
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/load_more"
-        android:layout_below="@+id/grid_view"/>
+        android:scrollbars="none"
+        android:verticalSpacing="3dp"
+        android:horizontalSpacing="3dp" />
 
 </RelativeLayout>

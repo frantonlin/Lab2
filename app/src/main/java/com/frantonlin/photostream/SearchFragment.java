@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -28,6 +31,18 @@ public class SearchFragment extends Fragment {
     public SearchFragment() {}
 
     @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.search_menuitem, menu);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_search, container, false);
@@ -37,6 +52,7 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         final EditText searchBar = (EditText) view.findViewById(R.id.search_bar);
         ImageButton searchButton = (ImageButton) view.findViewById(R.id.search_button);
+        final GridView gridView = (GridView) view.findViewById(R.id.search_grid_view);
 
         if(searchBar.requestFocus()) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -44,13 +60,15 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                query = searchBar.getText().toString();
-                page = 1;
-                makeRequestWithCallback(query);
-                GridViewAdapter gva = (GridViewAdapter) ((GridView) getActivity().findViewById(R.id.grid_view)).getAdapter();
-                gva.clearImages();
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                if(!searchBar.getText().toString().isEmpty()) {
+                    query = searchBar.getText().toString();
+                    page = 1;
+                    makeRequestWithCallback(query);
+                    GridViewAdapter gva = (GridViewAdapter) ((GridView) getActivity().findViewById(R.id.search_grid_view)).getAdapter();
+                    gva.clearImages();
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
             }
         });
         searchBar.setOnKeyListener(new OnKeyListener() {
@@ -59,11 +77,13 @@ public class SearchFragment extends Fragment {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
                             if (getActivity().findViewById(view.getId()) == getActivity().findViewById(R.id.search_bar)) {
-                                query = searchBar.getText().toString();
-                                page = 1;
-                                makeRequestWithCallback(query);
-                                GridViewAdapter gva = (GridViewAdapter) ((GridView) getActivity().findViewById(R.id.grid_view)).getAdapter();
-                                gva.clearImages();
+                                if(!searchBar.getText().toString().isEmpty()) {
+                                    query = searchBar.getText().toString();
+                                    page = 1;
+                                    makeRequestWithCallback(query);
+                                    GridViewAdapter gva = (GridViewAdapter) ((GridView) getActivity().findViewById(R.id.search_grid_view)).getAdapter();
+                                    gva.clearImages();
+                                }
                             }
                             return true;
                         default:
@@ -74,9 +94,15 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        GridView gv = (GridView) getActivity().findViewById(R.id.grid_view);
-        gv.setAdapter(new GridViewAdapter(getActivity()));
-        gv.setOnScrollListener(new ScrollListener(getActivity()));
+        gridView.setAdapter(new GridViewAdapter(getActivity()));
+        gridView.setOnScrollListener(new WebScrollListener(getActivity()));
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ArrayList<String> urls = ((GridViewAdapter) gridView.getAdapter()).getUrls();
+                ((MainActivity) getActivity()).saveImage(urls.get(position));
+            }
+        });
     }
 
     public void makeRequestWithCallback(String query) {
@@ -86,9 +112,8 @@ public class SearchFragment extends Fragment {
             public void callback(boolean success, ArrayList<String> urls) {
                 if (success) {
                     Log.d("Success", Boolean.toString(success));
-                    GridView gv = (GridView) getActivity().findViewById(R.id.grid_view);
+                    GridView gv = (GridView) getActivity().findViewById(R.id.search_grid_view);
                     GridViewAdapter gva = (GridViewAdapter) gv.getAdapter();
-//                    ((MainActivity) getActivity()).getHttpHandler().queue.cancelAll(null);
                     gva.addImages(urls);
                 } else {
                     Log.d("Failure", Boolean.toString(success));
@@ -105,9 +130,8 @@ public class SearchFragment extends Fragment {
             public void callback(boolean success, ArrayList<String> urls) {
                 if (success) {
                     Log.d("Success", Boolean.toString(success));
-                    GridView gv = (GridView) getActivity().findViewById(R.id.grid_view);
+                    GridView gv = (GridView) getActivity().findViewById(R.id.search_grid_view);
                     GridViewAdapter gva = (GridViewAdapter) gv.getAdapter();
-//                    ((MainActivity) getActivity()).getHttpHandler().queue.cancelAll(null);
                     gva.addImages(urls);
                 } else {
                     Log.d("Failure", Boolean.toString(success));
