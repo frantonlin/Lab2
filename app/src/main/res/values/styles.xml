@@ -2,9 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:color">@color/primary</item>
+        <item name="android:color">@color/md_grey_900</item>
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorButtonNormal">@color/accent</item>
+        <item name="android:colorPrimary">@color/md_grey_900</item>
     </style>
 
 </resources>

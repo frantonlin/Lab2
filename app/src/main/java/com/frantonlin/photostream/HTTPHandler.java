@@ -35,8 +35,10 @@ public class HTTPHandler {
         String url = "https://www.googleapis.com/customsearch/v1?";
         String key = "AIzaSyCU_NgWKrIokTxsV2MM_8o2x7Iko9e3ARI";
         String key2 = "AIzaSyCUjoI4H76ZXerGg8xPgjc2E2wUOyh8jE0";
+        String key3 = "AIzaSyBIIvvq1ObxS1BqY_tlIKcv0i9w34jL_s4";
         String cx = "014156318284437473397:qkwz6_9kcmk";
         String cx2 = "014156318284437473397:bxllsb702mi";
+        String cx3 = "014156318284437473397:9xv_wx2tayq";
         String searchType = "image";
         String num = "10";
         String start = Integer.toString((page-1)*10+1);
@@ -49,8 +51,8 @@ public class HTTPHandler {
 //                "&start=" + start +
 //                "&q=" + query;
         String requestUrl = url +
-                "key=" + key2 +
-                "&cx=" + cx2 +
+                "key=" + key3 +
+                "&cx=" + cx3 +
                 "&searchType=" + searchType +
                 "&num=" + num +
                 "&start=" + start +

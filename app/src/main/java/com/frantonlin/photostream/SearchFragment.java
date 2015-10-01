@@ -61,7 +61,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!searchBar.getText().toString().isEmpty()) {
-                    query = searchBar.getText().toString();
+                    query = searchBar.getText().toString().replaceAll(" ", "+");
                     page = 1;
                     makeRequestWithCallback(query);
                     GridViewAdapter gva = (GridViewAdapter) ((GridView) getActivity().findViewById(R.id.search_grid_view)).getAdapter();
@@ -78,7 +78,7 @@ public class SearchFragment extends Fragment {
                         case KeyEvent.KEYCODE_ENTER:
                             if (getActivity().findViewById(view.getId()) == getActivity().findViewById(R.id.search_bar)) {
                                 if(!searchBar.getText().toString().isEmpty()) {
-                                    query = searchBar.getText().toString();
+                                    query = searchBar.getText().toString().replaceAll(" ", "+");
                                     page = 1;
                                     makeRequestWithCallback(query);
                                     GridViewAdapter gva = (GridViewAdapter) ((GridView) getActivity().findViewById(R.id.search_grid_view)).getAdapter();
@@ -101,6 +101,7 @@ public class SearchFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ArrayList<String> urls = ((GridViewAdapter) gridView.getAdapter()).getUrls();
                 ((MainActivity) getActivity()).saveImage(urls.get(position));
+                ((SquaredImageView) gridView.getChildAt(position)).save();
             }
         });
     }

@@ -39,6 +39,7 @@
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="none"
         android:verticalSpacing="3dp"
-        android:horizontalSpacing="3dp" />
+        android:horizontalSpacing="3dp"
+        android:drawSelectorOnTop="true"/>
 
 </RelativeLayout>

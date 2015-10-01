@@ -67,6 +67,11 @@ final class GridViewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void removeImage(int position) {
+        this.urls.remove(position);
+        notifyDataSetChanged();
+    }
+
     public void clearImages() {
         this.urls.clear();
         notifyDataSetChanged();
